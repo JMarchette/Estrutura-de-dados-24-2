@@ -1,0 +1,133 @@
+// Exercício 4:
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define qtd_clientes 10
+#define maximo_nome 30
+#define maximo_telefone 20
+
+typedef struct 
+{
+    char nome[maximo_nome];
+    char telefone[maximo_telefone];
+    int codigo;
+} Cliente;
+
+Cliente clientes[qtd_clientes]; 
+int totalClientes = 0; 
+
+void mostrarCliente(Cliente *ponteiro)
+{
+    printf("\nCliente: \ncodigo = %i \nnome = %s \ntelefone = %s \n", ponteiro->codigo, ponteiro->nome, ponteiro->telefone);
+}
+
+void apagarCliente(int indice)
+{
+    if(indice < 0 || indice >= totalClientes) 
+    {
+        printf("Índice inválido.\n");
+        return;
+    }
+    
+    for (int i = indice; i < totalClientes - 1; i++) 
+    {
+        clientes[i] = clientes[i + 1];
+    }
+    
+    totalClientes--; 
+    
+    printf("Cliente apagado.\n");
+}
+
+void criarCliente(int idUser, const char *nomeUser, const char *telefoneUser)
+{
+    if (totalClientes >= qtd_clientes) {
+        printf("Não é possível adicionar mais clientes.\n");
+        return;
+    }
+    
+    // Adiciona o cliente no vetor de clientes
+    Cliente *clienteAdicionado = &clientes[totalClientes];
+    
+    clienteAdicionado->codigo = idUser;
+    
+    strncpy(clienteAdicionado->nome, nomeUser, maximo_nome - 1);
+    
+    strncpy(clienteAdicionado->telefone, telefoneUser, maximo_telefone - 1);
+    
+    totalClientes++;
+    
+    mostrarCliente(clienteAdicionado);
+}
+
+int main()
+{
+    int escolhaEntrada = 1, idCliente, indiceCliente;
+    char nome[maximo_nome], telefoneCliente[maximo_telefone];
+    
+    while (escolhaEntrada != 0)
+    {
+        int chamarFuncao = 0;
+        
+        printf("1=Criar Cliente \n2=Mostrar Cliente \n3=Apagar Cliente\n");
+        printf("\nEscolha uma opção: ");
+        scanf("%i", &chamarFuncao);
+        
+        if (chamarFuncao == 1)
+        {
+            printf("\nDigite o código do usuário: ");
+            scanf("%i", &idCliente);
+            
+            printf("\nDigite o nome do usuário: ");
+            scanf("%s", nome);
+            
+            printf("\nDigite o telefone do usuário: ");
+            scanf("%s", telefoneCliente);
+            
+            criarCliente(idCliente, nome, telefoneCliente);
+        }
+        
+        else if (chamarFuncao == 2)
+        {
+            if (totalClientes == 0) 
+            {
+                printf("Nenhum cliente cadastrado.\n");
+            } 
+            else 
+            {
+                printf("\nLista de clientes:\n");
+                for (int i = 0; i < totalClientes; i++) 
+                {
+                    printf("\nCliente %d:\n", i + 1);
+                    mostrarCliente(&clientes[i]);
+                }
+            }
+        }
+        
+        else if (chamarFuncao == 3)
+        {
+            if (totalClientes == 0) 
+            {
+                printf("Nenhum cliente para apagar.\n");
+                continue;
+            }
+            
+            printf("\nDigite o índice do cliente a ser apagado: (começa em 1 e vai até 10) ");
+            scanf("%i", &indiceCliente);
+            
+            apagarCliente(indiceCliente - 1); 
+        }
+        
+        else
+        {
+            printf("\nOpção inválida.\n");
+        }
+        
+        printf("\nDeseja continuar? 1-sim 0-não: \n");
+        scanf("%i", &escolhaEntrada);
+    }
+    
+    return 0;
+}
